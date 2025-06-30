@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trucos para las Tablas de Multiplicar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Subtle Accents -->
+    <!-- Application Structure Plan: The SPA uses a non-linear, "interactive card" or "explorer" model. A persistent top navigation bar with buttons for tables 1-10 allows users to jump to any table instantly. The main content area dynamically displays the "card" for the selected table. This structure was chosen over a linear presentation to empower users, especially young learners, to choose their own learning path, making the experience more engaging and less prescriptive. It transforms a passive report into an active learning tool. -->
+    <!-- Visualization & Content Choices: Report Info -> Table tricks. Goal -> Inform & Engage. Viz/Presentation -> Interactive cards with text, HTML/CSS diagrams (grids, hands), and simple JS-powered interactions. Interaction -> Dynamic content swapping, hover effects, and clickable elements to reveal answers or animate concepts (e.g., the finger trick for Table 9). Justification -> Direct interaction reinforces learning better than static text. Using HTML/CSS for visuals avoids external libraries and meets constraints. Library/Method -> Vanilla JS for all logic and DOM manipulation. Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-btn.active {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .card-content {
+            min-height: 450px;
+        }
+        .hand-container .finger {
+            transition: all 0.3s ease;
+        }
+        .hand-container .finger.folded {
+            transform: scaleY(0.6);
+            background-color: #fca5a5; /* red-300 */
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-amber-800">¡Domina las Tablas de Multiplicar!</h1>
+            <p class="text-stone-600 mt-2">Explora los trucos para aprender cada tabla de una forma divertida e interactiva.</p>
+        </header>
+
+        <nav class="bg-white/70 backdrop-blur-sm p-2 rounded-xl shadow-md sticky top-4 z-10 mb-8">
+            <div id="nav-container" class="flex flex-wrap justify-center gap-2">
+            </div>
+        </nav>
+
+        <main id="content-card" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+        </main>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tablesData = [
+                {
+                    table: 1,
+                    title: "Tabla del 1: El Espejo",
+                    explanation: "Esta es la más fácil de todas. Cualquier número que multiplicas por 1, se queda igual. ¡Es como si se viera en un espejo!",
+                    content: () => `
+                        <div class="text-center">
+                            <p class="text-2xl mb-4">✨ 1 &times; 8 = 8</p>
+                            <p class="text-2xl mb-4">✨ 1 &times; 5 = 5</p>
+                            <p class="text-lg text-stone-600 mt-8">El resultado es siempre el mismo número por el que multiplicas.</p>
+                        </div>
+                    `
+                },
+                {
+                    table: 2,
+                    title: "Tabla del 2: El Doble",
+                    explanation: "Multiplicar por 2 es simplemente sumar el número a sí mismo. Todos los resultados son números pares.",
+                    content: () => `
+                        <div class="text-center">
+                             <p class="text-2xl mb-4">➕ 2 &times; 7 = 7 + 7 = 14</p>
+                             <p class="text-2xl mb-4">➕ 2 &times; 9 = 9 + 9 = 18</p>
+                             <p class="text-lg text-stone-600 mt-8">¡Busca el doble del número y listo!</p>
+                        </div>
+                    `
+                },
+                {
+                    table: 3,
+                    title: "Tabla del 3: El Gato Mágico #️⃣",
+                    explanation: "Usa este truco visual con una cuadrícula de 3x3 para encontrar los resultados fácilmente.",
+                    content: () => `
+                        <div class="flex flex-col md:flex-row items-center gap-8">
+                            <div class="flex-1 text-stone-700 space-y-3 text-left">
+                                <p>1. Dibuja una cuadrícula de 3x3 como la del juego 'gato'.</p>
+                                <p>2. Rellena los números del 1 al 9, empezando desde la esquina inferior izquierda hacia arriba.</p>
+                                <p>3. Finalmente, añade las decenas: 0 para la primera columna, 1 para la segunda y 2 para la tercera.</p>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-2xl font-bold p-4 bg-amber-50 rounded-lg">
+                                <div class="p-4 text-center border rounded-md">2<span class="text-amber-600">7</span></div>
+                                <div class="p-4 text-center border rounded-md">1<span class="text-amber-600">8</span></div>
+                                <div class="p-4 text-center border rounded-md">0<span class="text-amber-600">9</span></div>
+                                <div class="p-4 text-center border rounded-md">2<span class="text-amber-600">4</span></div>
+                                <div class="p-4 text-center border rounded-md">1<span class="text-amber-600">5</span></div>
+                                <div class="p-4 text-center border rounded-md">0<span class="text-amber-600">6</span></div>
+                                <div class="p-4 text-center border rounded-md">2<span class="text-amber-600">1</span></div>
+                                <div class="p-4 text-center border rounded-md">1<span class="text-amber-600">2</span></div>
+                                <div class="p-4 text-center border rounded-md">0<span class="text-amber-600">3</span></div>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    table: 4,
+                    title: "Tabla del 4: El Doble del Doble",
+                    explanation: "Si ya dominas la tabla del 2, esta es muy sencilla. Solo tienes que duplicar el número, y luego volver a duplicar el resultado.",
+                    content: () => `
+                        <div class="text-center">
+                            <p class="text-xl mb-2 font-semibold">Ejemplo: 4 &times; 6</p>
+                            <div class="bg-stone-100 p-4 rounded-lg inline-block">
+                                <p class="text-lg">Paso 1: El doble de 6 es <span class="font-bold text-2xl text-amber-700">12</span>.</p>
+                                <p class="text-lg mt-2">Paso 2: El doble de 12 es <span class="font-bold text-2xl text-amber-700">24</span>.</p>
+                            </div>
+                            <p class="text-2xl mt-4">¡El resultado es 24!</p>
+                        </div>
+                    `
+                },
+                {
+                    table: 5,
+                    title: "Tabla del 5: El Club del 0 y el 5",
+                    explanation: "Esta tabla es muy fácil de recordar porque todos sus resultados terminan en 0 o en 5.",
+                    content: () => `
+                        <div class="grid md:grid-cols-2 gap-6 text-center">
+                            <div class="bg-blue-50 p-6 rounded-lg">
+                                <h4 class="font-bold text-xl text-blue-800">Si multiplicas por un número PAR:</h4>
+                                <p class="mt-2">El resultado siempre termina en 0.</p>
+                                <p class="text-2xl font-bold mt-4">5 &times; 8 = 40</p>
+                            </div>
+                            <div class="bg-green-50 p-6 rounded-lg">
+                                <h4 class="font-bold text-xl text-green-800">Si multiplicas por un número IMPAR:</h4>
+                                <p class="mt-2">El resultado siempre termina en 5.</p>
+                                <p class="text-2xl font-bold mt-4">5 &times; 7 = 35</p>
+                            </div>
+                        </div>
+                    `
+                },
+                 {
+                    table: 6,
+                    title: "Tabla del 6: El Truco del Número Par",
+                    explanation: "Al multiplicar 6 por un número par, el resultado tiene un final predecible y fácil de recordar.",
+                    content: () => `
+                        <div class="text-center">
+                            <p class="mb-4 text-lg">Cuando multiplicas 6 por un número <span class="font-bold text-amber-700">PAR</span>, el resultado termina en ¡ese mismo número!</p>
+                            <div class="space-y-3 text-2xl">
+                                <p>6 &times; 2 = 1<span class="font-bold underline">2</span></p>
+                                <p>6 &times; 4 = 2<span class="font-bold underline">4</span></p>
+                                <p>6 &times; 8 = 4<span class="font-bold underline">8</span></p>
+                            </div>
+                             <p class="mt-6 text-stone-600">Para los números impares, solo suma 6 al resultado par anterior. Ejemplo: 6 &times; 5 = (6 &times; 4) + 6 = 24 + 6 = 30.</p>
+                        </div>
+                    `
+                },
+                {
+                    table: 7,
+                    title: "Tabla del 7: El Reto con Patrones",
+                    explanation: "La tabla del 7 puede parecer difícil, pero también tiene un truco con una cuadrícula. ¡Y una regla para recordar la más famosa de sus multiplicaciones!",
+                    content: () => `
+                         <div class="flex flex-col items-center gap-8">
+                            <div class="text-left text-stone-700">
+                                <p>1. Empieza con una cuadrícula de 3x3.</p>
+                                <p>2. Rellena los números del 1 al 9, empezando desde arriba a la derecha y bajando por columnas.</p>
+                                <p>3. Añade las decenas: 0, 1, 2 en la primera fila; 2, 3, 4 en la segunda; y 4, 5, 6 en la tercera.</p>
+                            </div>
+                            <div class="bg-rose-50 p-6 rounded-xl mt-4 text-center">
+                                <h4 class="font-bold text-xl text-rose-800">Recordatorio Mágico</h4>
+                                <p class="mt-2">Para 7 &times; 8, piensa en la secuencia numérica: <span class="font-bold">5, 6, 7, 8</span></p>
+                                <p class="text-2xl font-bold mt-2">7 &times; 8 = 56</p>
+                            </div>
+                        </div>
+                    `
+                },
+                {
+                    table: 8,
+                    title: "Tabla del 8: El Cohete 🚀",
+                    explanation: "¡Duplica, duplica y vuelve a duplicar! Para multiplicar por 8, solo tienes que encontrar el doble del número tres veces seguidas.",
+                    content: () => `
+                        <div class="text-center">
+                            <p class="text-xl mb-2 font-semibold">Ejemplo: 8 &times; 3</p>
+                            <div class="bg-stone-100 p-4 rounded-lg inline-block text-left">
+                                <p class="text-lg">Paso 1: Doble de 3 es <span class="font-bold text-2xl text-amber-700">6</span>.</p>
+                                <p class="text-lg mt-2">Paso 2: Doble de 6 es <span class="font-bold text-2xl text-amber-700">12</span>.</p>
+                                <p class="text-lg mt-2">Paso 3: Doble de 12 es <span class="font-bold text-2xl text-amber-700">24</span>.</p>
+                            </div>
+                            <p class="text-2xl mt-4">¡El resultado es 24!</p>
+                        </div>
+                    `
+                },
+                {
+                    table: 9,
+                    title: "Tabla del 9: ¡Magia en tus Dedos!",
+                    explanation: "Usa tus manos para no olvidar nunca la tabla del 9. Cada dedo representa un número del 1 al 10. ¡Pruébalo!",
+                    content: (app) => `
+                        <div class="text-center">
+                            <p class="mb-4">Haz clic en un número para ver el truco:</p>
+                            <div id="multiplier-selector-9" class="flex flex-wrap justify-center gap-2 mb-6">
+                                ${[...Array(10).keys()].map(i => `<button data-multiplier="${i + 1}" class="number-btn bg-stone-200 hover:bg-amber-200 font-bold py-2 px-4 rounded-lg transition">${i + 1}</button>`).join('')}
+                            </div>
+                            <div class="hand-container flex justify-center gap-4 text-sm select-none">
+                                <!-- Left Hand -->
+                                <div class="flex items-end gap-2">
+                                    ${[...Array(5).keys()].map(i => `<div id="finger-${i + 1}" class="finger w-8 h-24 bg-amber-200 rounded-md flex items-start justify-center pt-1">${i + 1}</div>`).join('')}
+                                </div>
+                                <!-- Right Hand -->
+                                <div class="flex items-end gap-2">
+                                     ${[...Array(5).keys()].map(i => `<div id="finger-${i + 6}" class="finger w-8 h-24 bg-amber-200 rounded-md flex items-start justify-center pt-1">${i + 6}</div>`).join('')}
+                                </div>
+                            </div>
+                            <div id="result-9" class="mt-6 text-2xl font-bold h-8">Selecciona un número arriba</div>
+                        </div>
+                    `,
+                    onRender: () => {
+                        const selector = document.getElementById('multiplier-selector-9');
+                        const resultDiv = document.getElementById('result-9');
+                        const fingers = document.querySelectorAll('.finger');
+
+                        selector.addEventListener('click', (e) => {
+                            if (e.target.classList.contains('number-btn')) {
+                                const multiplier = parseInt(e.target.dataset.multiplier, 10);
+                                fingers.forEach(f => f.classList.remove('folded'));
+                                document.getElementById(`finger-${multiplier}`).classList.add('folded');
+
+                                const tens = multiplier - 1;
+                                const units = 10 - multiplier;
+                                resultDiv.innerHTML = `9 &times; ${multiplier} = ${tens}${units}`;
+                            }
+                        });
+                    }
+                },
+                 {
+                    table: 10,
+                    title: "Tabla del 10: ¡Un Cero al Héroe!",
+                    explanation: "¡Felicidades, llegaste a la más fácil! Para multiplicar por 10, solo tienes que añadir un cero al final del número.",
+                    content: () => `
+                        <div class="text-center">
+                            <p class="text-2xl mb-4">🔟 10 &times; 3 = 30</p>
+                            <p class="text-2xl mb-4">🔟 10 &times; 9 = 90</p>
+                            <p class="text-lg text-stone-600 mt-8">¡Es así de simple!</p>
+                        </div>
+                    `
+                }
+            ];
+
+            const navContainer = document.getElementById('nav-container');
+            const contentCard = document.getElementById('content-card');
+            let activeNavBtn = null;
+
+            function renderCard(tableNum) {
+                const tableData = tablesData.find(t => t.table === tableNum);
+                if (!tableData) return;
+
+                contentCard.innerHTML = `
+                    <div class="card-content flex flex-col justify-center fade-in">
+                        <h2 class="text-3xl font-bold text-amber-800 text-center mb-2">${tableData.title}</h2>
+                        <p class="text-stone-600 text-center mb-6">${tableData.explanation}</p>
+                        <div class="content-body flex-grow flex items-center justify-center">
+                            ${tableData.content(this)}
+                        </div>
+                    </div>
+                `;
+                
+                if (tableData.onRender) {
+                    tableData.onRender();
+                }
+            }
+
+            function createNav() {
+                tablesData.forEach(tableData => {
+                    const btn = document.createElement('button');
+                    btn.textContent = tableData.table;
+                    btn.className = 'nav-btn bg-white hover:bg-amber-100 text-amber-800 font-bold py-2 px-4 rounded-lg shadow-sm w-12 h-12';
+                    btn.addEventListener('click', () => {
+                        renderCard(tableData.table);
+                        if(activeNavBtn) activeNavBtn.classList.remove('active', 'bg-amber-300');
+                        btn.classList.add('active', 'bg-amber-300');
+                        activeNavBtn = btn;
+                    });
+                    navContainer.appendChild(btn);
+                });
+            }
+            
+            createNav();
+            
+            const firstButton = navContainer.querySelector('button');
+            if(firstButton) {
+                firstButton.click();
+            }
+
+        });
+    </script>
+</body>
+</html>
